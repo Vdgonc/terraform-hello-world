@@ -1,0 +1,33 @@
+provisioner "aws" {
+    region = "us-east-2"
+    version ~> "2.0"
+}
+
+
+data "aws_ami" "centos" {
+    most_recent = true
+
+    filter {
+        name = "name"
+        values = ["CentOS Linux 7 x86_64 HVM EBS *"]
+    }
+
+    filter {
+      name   = "architecture"
+      values = ["x86_64"]
+    }
+
+    filter {
+      name   = "root-device-type"
+      values = ["ebs"]
+    }
+}
+
+resource "aws_instance" "web" {
+  ami           = data.aws_ami.centos.id
+  instance_type = "t2.micro"
+
+  tags = {
+    Name = "HelloWorld"
+  }
+}
